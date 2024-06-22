@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt_br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Solver Pro - Página Inicial</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', {'packages':['corechart']});
+    </script>
+    <script src="<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script></script>
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-dark bg-custom">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">
+                <img src="../static/img/logo-2.png" width="120">
+              </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="mt-5">
+            <h1>Olá!</h1>
+            <h1>Insira os dados nos campos abaixo</h1>
+        </div>
+        <div class="mt-5">
+            <form action="/tabela_retricoes" method="GET">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="objetivo" id="label_1">Objetivo</label>
+                        <select name="objetivo" id="objetivo" class="form-control mt-2 rounded-pill">
+                            <option value="Max" selected>Maximizar</option>
+                            <option value="Min">Minimizar</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="metodo" id="label_2">Método</label>
+                        <select name="metodo" id="metodo" onchange="getOption()" class="form-control mt-3 rounded-pill">
+                            <option value="Simplex" selected>Simplex</option>
+                            option value="Grafico">Grafico</option>
+                            <option value="Dual">Dual</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="numVariaveis" id="label_3">Variáveis</label>
+                        <select name="num_variaveis" id="numVariaveis" class="form-control mt-2 rounded-pill">
+                            <option value="2" selected>2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="numRestricoes" id="label_4">Restrições</label>
+                        <select name="num_restricoes" id="numRestricoes" class="form-control mt-2 rounded-pill">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-end">
+                    <input class="btn btn-lg btn-secondary rounded-pill col-md-2 mt-5" type="submit" value="Próximo >">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function getOption() {
+            selectElement = document.querySelector('#metodo');
+            metodo = selectElement.value
+            
+            if (metodo == 'Grafico') {
+                var select = document.getElementById("numVariaveis");
+                select.classList.add("disabled_selector");
+            } else {
+                var select = document.getElementById("numVariaveis");
+                select.classList.remove("disabled_selector");
+            }
+        }
+    </script>
+    <script src="../static/js/index.js"></script>
+</body>
+</html>

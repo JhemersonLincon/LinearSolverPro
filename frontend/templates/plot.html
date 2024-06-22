@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Funções de Restrição com Chart.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            max-width: 800px;
+            max-height: 600px;
+            width: 80vw;
+            height: 80vh;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const matrizPrincipal = [[2, 4], [4, 2], [5, 6]];
+            const vetorDireito = [7, 5, 20];
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            // Cálculo dos pontos das funções de restrição
+            function calculateConstraintPoints(a, b, c) {
+                const points = [];
+                const xMin = -10;
+                const xMax = 10;
+
+                if (b !== 0) {
+                    points.push({x: xMin, y: (c - a * xMin) / b});
+                    points.push({x: xMax, y: (c - a * xMax) / b});
+                }
+
+                return points;
+            }
+
+            // Função para calcular o vetor gradiente
+            function calculateGradientVector(a, b) {
+                const scale = 3; // Escala para melhor visualização
+                return {
+                    x: a * scale,
+                    y: b * scale
+                };
+            }
+
+            // Função para desenhar as restrições, vetor gradiente e área de viabilidade
+            function drawChart() {
+                const colors = ['red', 'blue', 'green']; // Cores para cada restrição
+
+                // Configuração dos dados das restrições
+                const data = {
+                    datasets: matrizPrincipal.map((constraint, index) => {
+                        const c = vetorDireito[index];
+                        const points = calculateConstraintPoints(constraint[0], constraint[1], c);
+
+                        return {
+                            label: `Restrição ${index + 1}`,
+                            data: points,
+                            borderColor: colors[index % colors.length],
+                            fill: false,
+                            showLine: true,
+                            pointRadius: 0
+                        };
+                    })
+                };
+
+                // Configuração do gráfico principal
+                const config = {
+                    type: 'scatter',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'X'
+                                },
+                                min: -10,
+                                max: 10
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Y'
+                                },
+                                min: -10,
+                                max: 10
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                gradient: {
+                                    type: 'line',
+                                    xMin: 0,
+                                    xMax: calculateGradientVector(2, 4).x,
+                                    yMin: 0,
+                                    yMax: calculateGradientVector(2, 4).y,
+                                    borderColor: 'black',
+                                    borderWidth: 2,
+                                    label: {
+                                        enabled: true,
+                                        content: 'Vetor Gradiente',
+                                        position: 'center'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                // Criar o gráfico
+                new Chart(ctx, config);
+            }
+
+            // Desenhar o gráfico ao carregar a página
+            drawChart();
+        });
+    </script>
+</body>
+</html>

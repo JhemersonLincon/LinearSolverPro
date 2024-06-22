@@ -1,0 +1,84 @@
+* {
+    font-family: "Allegreya";
+}
+
+body {
+    background-image: url('../img/background-image.jpeg');
+    background-size: cover;
+}
+
+h1 {
+    font-weight: bolder;
+    font-size: 50px;
+    color: #8F9899;
+    -webkit-text-stroke-width: 0.3px;
+    -webkit-text-stroke-color: #000;
+    filter: drop-shadow(3px 2px 1px #000)
+}
+
+label {
+    font-size: 30px;
+    -webkit-text-stroke-width: 0.15px;
+    -webkit-text-stroke-color: #000;
+    filter: drop-shadow(0.75px 0.5px 0.25px #000)
+}
+
+select {
+    background-color: #80949D !important; 
+    border-color: #80949D !important; 
+    color: #fff !important;
+}
+
+#label_1 {
+    color: #667576;
+}
+
+#label_2 {
+    color: #576566;
+}
+
+#label_3 {
+    color: #3F4C4D;
+}
+
+#label_4 {
+    color: #434E4F;
+}
+
+#selectRestricao {
+    background-color: rgba(10, 26, 76, 0.6) !important;
+    border: none !important;
+    color: #fff !important;
+    text-align: center;
+}
+
+#selectRestricao option {
+    background-color: rgba(10, 26, 76) !important;
+}
+
+.btn-secondary {
+    color: #667576;
+    background-color: #A6BEC9;
+}
+
+.bg-custom {
+    background-color: #0A1A42;
+    opacity: 0.6;
+}
+
+.disabled_selector {
+    background-color: rgba(128, 148, 157, ) !important;
+    border-color: rgba(128, 148, 157, 1)  !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    pointer-events: none;
+}
+
+.table-bordered {
+    border: 1px solid #000 !important;
+    background-color: rgba(10, 26, 76, 0.6) !important;
+}
+
+.label-check{
+    font-size: 16px;
+    padding-left: 8px;
+}

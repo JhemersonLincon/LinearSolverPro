@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Solver Pro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400..900&display=swap" rel="stylesheet">
+</head>
+<body onload="criarTabela()">
+    <header>
+        <nav class="navbar navbar-dark bg-custom">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">
+                <img src="../static/img/logo-2.png" width="120">
+              </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="mt-5 mb-5">
+            <h1>Preencha as restrições</h1>
+        </div>
+        <div id="tabela"></div>
+        <div class="input-group mb-3">
+            <input class="form-check-input" id="check-solucao-inteira"type="checkbox" value="" id="defaultCheck1">
+            <label class="form-check-label label-check" for="defaultCheck1">Solução Inteira
+          </div>
+        <div class="row d-flex justify-content-between">
+            <a href="{{ url_for('main') }}" class="btn btn-lg btn-secondary rounded-pill col-md-2 mt-5">&lt; Voltar</a>
+            <input class="btn btn-lg btn-secondary rounded-pill col-md-2 mt-5" onclick="enviarDados()" value="Próximo >">
+        </div>
+    </div>
+
+    <!-- <form id="formularioTabela">
+        <button type="button" onclick="enviarDados()">Enviar dados</button>
+    </form> -->
+
+    <script>
+        var data = window.location.search;
+        var params = new URLSearchParams(data);
+
+        function criarTabela() {
+            // Obter valores do formulário
+
+            const numRestricoes = params.get("num_restricoes");
+            const numVariaveis = params.get("num_variaveis");
+            
+            // Criar tabela
+            const tabela = document.createElement('table');
+            tabela.setAttribute("id", "tabelaDinamica");
+            tabela.setAttribute("class", "table table-hover table-bordered")
+
+            let cabecalho = tabela.createTHead();
+            const linhaCabecalho = cabecalho.insertRow();
+            for (let i = 0; i < numVariaveis; i++) {
+                const celulaCabecalho = linhaCabecalho.insertCell();
+                celulaCabecalho.setAttribute("style", "text-align: center; font-weight: bolder; font-size: 22px; color: #fff;");
+                celulaCabecalho.textContent = 'X' + (i + 1);
+            }
+            const celulaCabecalhoSeletor = linhaCabecalho.insertCell();
+            celulaCabecalhoSeletor.setAttribute("style", "text-align: center; font-weight: bolder; font-size: 22px; color: #fff");
+            celulaCabecalhoSeletor.textContent = 'TIPO RESTRIÇÃO';
+            const celulaCabecalhoRecursos = linhaCabecalho.insertCell();
+            celulaCabecalhoRecursos.setAttribute("style", "text-align: center; font-weight: bolder; font-size: 22px; color: #fff");
+            celulaCabecalhoRecursos.textContent = 'RECURSOS DISPONÍVEIS';
+
+            // Atributos de restrição
+            for (let i = 0; i < numRestricoes; i++) {
+                const restricao = tabela.insertRow();
+                for (let j = 0; j < numVariaveis; j++) {
+                    const celula = restricao.insertCell();
+                    const input = document.createElement('input');
+                    input.setAttribute("type", "number");
+                    input.setAttribute("name", `celula_${i}_${j}`)
+                    input.setAttribute("value", "");
+                    input.setAttribute("class", "form-control text-center");
+                    input.setAttribute("style", "background-color: rgba(10, 26, 76, 0.6); border: none; color: #fff;");
+                    celula.appendChild(input);
+                }
+
+                // Coluna de Tipos de Restrições
+                const colTipoRestricao = restricao.insertCell();
+                const novoSelect = document.createElement('select');
+                novoSelect.setAttribute("name", "colRestricoes");
+                novoSelect.setAttribute("value", "");
+                novoSelect.setAttribute("id", "selectRestricao");
+                novoSelect.setAttribute("class", "form-control");
+
+                const restricoes = ['<=', '=', '>=']
+                restricoes.forEach(restricao => {
+                    const option = document.createElement('option');
+                    option.setAttribute("value", restricao);
+                    option.textContent = restricao;
+                    novoSelect.appendChild(option);
+                });
+
+                colTipoRestricao.appendChild(novoSelect);
+
+                // Coluna final
+                const colDireita = restricao.insertCell();
+                const novoInput = document.createElement('input');
+                novoInput.setAttribute("type", "number");
+                novoInput.setAttribute("name", "colDireita");
+                novoInput.setAttribute("value", "");
+                novoInput.setAttribute("class", "form-control text-center");
+                novoInput.setAttribute("style", "background-color: rgba(10, 26, 76, 0.6); border: none; color: #fff;");
+                colDireita.appendChild(novoInput);
+            }
+
+            //Linha da função objetivo
+            const funcaoObjetivo = tabela.insertRow();
+            for (let i = 0; i < numVariaveis; i++) {
+                const celula = funcaoObjetivo.insertCell();
+                const input = document.createElement('input');
+                input.setAttribute("type", "number");
+                input.setAttribute("name", "linFuncObj");
+                input.setAttribute("value", "");
+                input.setAttribute("class", "form-control text-center");
+                input.setAttribute("style", "background-color: rgba(10, 26, 76, 0.6); border: none; color: #fff;");
+                celula.appendChild(input);
+            }
+            const cabecalhoFuncaoObjetivo = funcaoObjetivo.insertCell();
+            cabecalhoFuncaoObjetivo.colSpan = 2;
+            cabecalhoFuncaoObjetivo.setAttribute("style", "text-align: center; font-weight: bolder; font-size: 22px; color: #fff");
+            cabecalhoFuncaoObjetivo.textContent = 'FUNÇÃO OBJETIVO';
+
+            // Exibir tabela"
+            const divTabela = document.getElementById('tabela');
+            divTabela.innerHTML = ''; // Limpar conteúdo anterior
+            divTabela.appendChild(tabela);
+        }
+
+        async function enviarDados() {
+            const tabela = document.getElementById('tabelaDinamica');
+        
+            const numRestricoes = parseInt(params.get("num_restricoes")) + 1;
+            const numVariaveis = parseInt(params.get("num_variaveis")) + 2;
+        
+            // Obter dados da simplex principal
+            const simplexPrincipal = [];
+            for (let i = 1; i < numRestricoes; i++) {
+                const restricao = tabela.rows[i];
+                const restricaoDados = [];
+                for (let j = 0; j < numVariaveis - 2; j++) {
+                    const celula = restricao.cells[j];
+                    const valor = celula.querySelector("input").value;
+                    restricaoDados.push(parseInt(valor));
+                }
+                simplexPrincipal.push(restricaoDados);
+            }
+        
+            // Obter dados da coluna select
+            const vetorRestricoes = [];
+            for (let i = 1; i < numRestricoes; i++) {
+                const restricao = tabela.rows[i];
+                const celulaSelect = restricao.cells[numVariaveis - 2];
+                const valorSelect = celulaSelect.querySelector('select').value;
+                vetorRestricoes.push(valorSelect);
+            }
+        
+            // Obter dados da coluna final
+            const vetorDireito = [];
+            for (let i = 1; i < numRestricoes; i++) {
+                const restricao = tabela.rows[i];
+                const celulaFinal = restricao.cells[numVariaveis - 1];
+                const valorFinal = celulaFinal.querySelector('input').value;
+                vetorDireito.push(parseInt(valorFinal));
+            }
+        
+            // Obter dados da função objetivo
+            const vetorFuncaoObjetivo = [];
+            const linha = tabela.rows[numRestricoes];
+            for (let i = 0; i < numVariaveis - 2; i++) {
+                const celula = linha.cells[i];
+                const valor = celula.querySelector("input").value;
+                vetorFuncaoObjetivo.push(parseInt(valor));
+            }
+        
+            const minMax = params.get("objetivo");
+        
+            // Combinar valores e enviar os dados
+            const dados = {
+                minMax: minMax,
+                ladoEsquerdo: simplexPrincipal,
+                restricoes: vetorRestricoes,
+                ladoDireito: vetorDireito,
+                funcao: vetorFuncaoObjetivo
+            };
+        
+            console.log(dados);
+        
+            try {
+                const response = await fetch('/simplexMethod', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dados)
+                });
+                console.log("-----------------------------")
+                // console.log(response.json().data)
+        
+                if (!response.ok) {
+                    throw new Error('Erro na resposta do servidor');
+                }
+        
+                const data = await response.json();
+                console.log('Resposta do servidor:', data.simplex.Iteracoes);
+
+                const tipo_solucao = document.getElementById("check-solucao-inteira")
+                console.log(tipo_solucao.checked)
+
+                // Redireciona para outra página e passa os dados como parâmetros de URL
+                if(tipo_solucao.checked){
+                    window.location.href = `/tabular_simplex?Iteracoes=${JSON.stringify(data.simplex_inteiro.Iteracoes)}&resultado=${JSON.stringify(data.simplex_inteiro.resultado)}&ladoE=${JSON.stringify(dados.ladoEsquerdo)}&ladoD=${JSON.stringify(dados.ladoDireito)}&funcao=${JSON.stringify(dados.funcao)}`;
+
+                }
+                window.location.href = `/tabular_simplex?Iteracoes=${JSON.stringify(data.simplex.Iteracoes)}&resultado=${JSON.stringify(data.simplex.resultado)}&ladoE=${JSON.stringify(dados.ladoEsquerdo)}&ladoD=${JSON.stringify(dados.ladoDireito)}&funcao=${JSON.stringify(dados.funcao)}`;
+
+
+            } catch (error) {
+                console.error('Erro ao enviar dados: ', error);
+            }
+        }
+        
+    </script>
+</body>
+</html>
