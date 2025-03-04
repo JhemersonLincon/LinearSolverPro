@@ -18,6 +18,9 @@ class minValor:
         arr = np.where(arr <= 0, np.inf, arr)
         return np.argmin(arr)
 
+
+
+########################################################################
 class MethodSimplex:
     pivo = {
         "Coluna": None,
@@ -234,12 +237,3 @@ class MethodSimplex:
         
         return {"resultado":best_solution.tolist(),"Iteracoes":iterações.tolist()}
 
-# # Exemplo de uso
-# ladoE = np.array([[2, 1], [1, 2]])
-# restricoes = ["<=", "<="]
-# ladoD = np.array([15, 20])
-# funcao = [3, 2]
-
-# method = MethodSimplex(ladoE, restricoes, ladoD, funcao)
-# best_solution, best_value = method.branch_and_bound()
-# print(f"Melhor solução inteira: {best_solution}, com valor: {best_value}")
