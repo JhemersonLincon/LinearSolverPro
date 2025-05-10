@@ -1,6 +1,5 @@
 import sys
 print(sys.path.append("../"))
-from model import LinearProgramming
 
 class DualSimplexMethod(LinearProgramming):
     def __init__(self):
