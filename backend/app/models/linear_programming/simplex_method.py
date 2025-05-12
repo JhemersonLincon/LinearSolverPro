@@ -80,5 +80,6 @@ if __name__ == '__main__':
     ]
     restricao = [24, 6, 1, 2]
     tipo_restricao = ["<=", "<=", "<=", "<="]
-    simplex = SimplexMin()
+    simplex = SimplexMax()
     solve = simplex(objective=objetivo, coefficients=coeficiente, restriction=restricao, type_restriction=tipo_restricao)
+    print(solve)
