@@ -1,5 +1,6 @@
 import numpy as np
 class BaseSimplex:
+    
     def __call__(self, objective:list, coefficients:list, restriction:list, type_restriction:list):
         objective, coefficients, restriction = self.adjust_tableau(type_restrictions=type_restriction, objective=objective, coefficients=coefficients, restriction=restriction)
         table = self.get_tableau(objective, coefficients, restriction)
@@ -11,14 +12,13 @@ class BaseSimplex:
         return table 
     
     def adjust_tableau(self, type_restrictions, objective, coefficients, restriction):
+        objective_copy = objective.copy()
         for i, type_restriction in enumerate(type_restrictions):
             if type_restriction == "<=":
-                objective.append(0)
+                objective_copy.append(0)
                 coefficients = [row + [0] if i!=j else row + [1] for j, row in enumerate(coefficients)]
-            elif type_restriction == ">=":
-                pass
             
-        objective = -np.array(objective)
+        objective = -np.array(objective_copy)
         restriction = np.array([0] + restriction)
         return objective, np.array(coefficients), restriction
     
@@ -49,7 +49,7 @@ class SimplexMax(BaseSimplex):
         in_base = np.argmin(table[0, :])
         
         # condição de viabilidade
-        reason = [a / b if b != 0 and a / b > 0  else np.inf for a, b in zip(table[1:, -1], table[1:, in_base])]
+        reason = [(a / b if b != 0 and a / b > 0 else np.inf) for a, b in zip(table[1:, -1], table[1:, in_base])]
         leave_base = np.argmin(reason) + 1 # Mais 1 devido a exclusão aqui em cima da primeira linha    
         return in_base, leave_base   
 
